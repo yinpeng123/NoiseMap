@@ -2,25 +2,23 @@ package com.example.yp.noisemap;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Application;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.location.Poi;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class LocationActivity extends AppCompatActivity {
     private final int SDK_PERMISSION_REQUEST = 127;
@@ -28,6 +26,8 @@ public class LocationActivity extends AppCompatActivity {
     private LocationService locationService;
     private TextView LocationResult;
     private Button startLocation;
+    private RadioGroup selectLocMode;
+    private LocationClientOption option;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class LocationActivity extends AppCompatActivity {
         LocationResult = (TextView) findViewById(R.id.textView1);
         LocationResult.setMovementMethod(ScrollingMovementMethod.getInstance());
         startLocation = (Button) findViewById(R.id.addfence);
+        selectLocMode=(RadioGroup)findViewById(R.id.selectMode);
         getPersimmions();
     }
 
@@ -99,9 +100,22 @@ public class LocationActivity extends AppCompatActivity {
         super.onStart();
         locationService = ((LocationApplication) getApplication()).locationService;
         startLocation.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
+                switch (selectLocMode.getCheckedRadioButtonId()) {
+                    case R.id.radio_hight:
+                        option.setLocationMode(LocationMode.Hight_Accuracy);
+                        break;
+                    case R.id.radio_low:
+                        option.setLocationMode(LocationMode.Battery_Saving);
+                        break;
+                    case R.id.radio_device:
+                        option.setLocationMode(LocationMode.Device_Sensors);
+                        break;
+                    default:
+                        break;
+                }
+                locationService.setLocationOption(option);
                 if (startLocation.getText().toString().equals(getString(R.string.startlocation))) {
                     locationService.start();// 定位SDK
                     // start之后会默认发起一次定位请求，开发者无须判断isstart并主动调用request

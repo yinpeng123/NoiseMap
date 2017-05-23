@@ -31,7 +31,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="AK" />
+            android:value="kr7ue1oWo86ddjLxZReW6rXyMufsK3B4" />
 
         <service
             android:name=".LocationService"
@@ -46,10 +46,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".LocationService"
-            android:enabled="true"
-            android:exported="true" />
     </application>
 
 </manifest>
